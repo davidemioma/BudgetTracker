@@ -60,4 +60,12 @@ export const expensesRoute = new Hono()
     mockExpense.splice(expenseIndex, 1);
 
     return c.json({ expenses: mockExpense });
+  })
+  .get("/total-spent", async (c) => {
+    const totalSpent = mockExpense.reduce(
+      (total, expense) => total + expense.amount,
+      0
+    );
+
+    return c.json({ totalSpent });
   });
