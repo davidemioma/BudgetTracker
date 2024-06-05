@@ -7,6 +7,7 @@ import {
   TableBody,
   TableCell,
   TableHead,
+  TableCaption,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
@@ -31,6 +32,8 @@ export const Route = createFileRoute("/expenses")({
     return (
       <div className="mx-auto w-full max-w-3xl p-4">
         <Table>
+          <TableCaption>A list of your recent expenses.</TableCaption>
+
           <TableHeader>
             <TableRow>
               <TableHead>ID</TableHead>
