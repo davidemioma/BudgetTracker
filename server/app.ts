@@ -16,4 +16,4 @@ app.get("*", serveStatic({ path: "./client/dist/indec.html" }));
 
 export default app;
 
-export type ApiRoutes = typeof apiRoutes;
+export type ApiRoutesType = typeof apiRoutes;
