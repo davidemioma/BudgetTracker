@@ -1,4 +1,4 @@
-import { api } from "../lib/api";
+import { api } from "../../lib/api";
 import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
 import { createFileRoute } from "@tanstack/react-router";
@@ -12,7 +12,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-export const Route = createFileRoute("/expenses")({
+export const Route = createFileRoute("/_authenticated/expenses")({
   component: () => {
     const { data, isLoading, error } = useQuery({
       queryKey: ["get-expenses"],

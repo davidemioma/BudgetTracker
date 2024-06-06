@@ -1,4 +1,4 @@
-import { api } from "../lib/api";
+import { api } from "../../lib/api";
 import Spinner from "@/components/Spinner";
 import PageLoader from "@/components/PageLoader";
 import { useQuery } from "@tanstack/react-query";
@@ -11,7 +11,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-export const Route = createFileRoute("/")({
+export const Route = createFileRoute("/_authenticated/")({
   loader: () => <PageLoader />,
   component: () => {
     const { data, isLoading, error } = useQuery({

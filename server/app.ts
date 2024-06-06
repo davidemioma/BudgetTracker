@@ -12,6 +12,7 @@ const apiRoutes = app
   .basePath("/api")
   .route("/auth", authRoute)
   .route("/expenses", expensesRoute);
+
 // Frontend. it's displays the client code if no API endpoint.
 app.get("*", serveStatic({ root: "./client/dist" }));
 

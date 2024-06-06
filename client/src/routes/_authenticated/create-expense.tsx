@@ -1,4 +1,4 @@
-import { api } from "../lib/api";
+import { api } from "../../lib/api";
 import Spinner from "@/components/Spinner";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import PageLoader from "@/components/PageLoader";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 
-export const Route = createFileRoute("/create-expense")({
+export const Route = createFileRoute("/_authenticated/create-expense")({
   loader: () => <PageLoader />,
   component: () => {
     const navigate = useNavigate();

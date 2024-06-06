@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { Hono } from "hono";
+import { getAuthUser } from "../kinde";
 import { zValidator } from "@hono/zod-validator";
 
 const ExpenseTypeSchema = z.object({
@@ -31,17 +32,22 @@ const mockExpense: ExpenseTypeValidator[] = [
 ];
 
 export const expensesRoute = new Hono()
-  .get("/", (c) => c.json({ expenses: mockExpense }))
-  .post("/", zValidator("json", CreateExpenseSchema), async (c) => {
-    const expense = await c.req.valid("json");
+  .get("/", getAuthUser, (c) => c.json({ expenses: mockExpense }))
+  .post(
+    "/",
+    getAuthUser,
+    zValidator("json", CreateExpenseSchema),
+    async (c) => {
+      const expense = await c.req.valid("json");
 
-    mockExpense.push({ id: (mockExpense.length + 1).toString(), ...expense });
+      mockExpense.push({ id: (mockExpense.length + 1).toString(), ...expense });
 
-    c.status(201);
+      c.status(201);
 
-    return c.json({ expenses: mockExpense });
-  })
-  .get("/:id{[0-9]+}", async (c) => {
+      return c.json({ expenses: mockExpense });
+    }
+  )
+  .get("/:id{[0-9]+}", getAuthUser, async (c) => {
     const id = await c.req.param("id");
 
     const expense = mockExpense.find((expense) => expense.id === id);
@@ -50,7 +56,7 @@ export const expensesRoute = new Hono()
 
     return c.json(expense);
   })
-  .delete("/:id{[0-9]+}", async (c) => {
+  .delete("/:id{[0-9]+}", getAuthUser, async (c) => {
     const id = await c.req.param("id");
 
     const expenseIndex = mockExpense.findIndex((expense) => expense.id === id);
@@ -61,7 +67,7 @@ export const expensesRoute = new Hono()
 
     return c.json({ expenses: mockExpense });
   })
-  .get("/total-spent", async (c) => {
+  .get("/total-spent", getAuthUser, async (c) => {
     const totalSpent = mockExpense.reduce(
       (total, expense) => total + expense.amount,
       0
