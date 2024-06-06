@@ -1,4 +1,4 @@
-# bun-hono-drizzle-tutorial
+# budget tracker
 
 To install dependencies:
 
