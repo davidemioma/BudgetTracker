@@ -1,0 +1,13 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1717698896069,
+      "tag": "0000_concerned_gideon",
+      "breakpoints": true
+    }
+  ]
+}

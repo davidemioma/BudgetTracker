@@ -13,7 +13,7 @@ type MyRouterContext = {
 export const Route = createRootRouteWithContext<MyRouterContext>()({
   component: () => (
     <>
-      <div className="flex gap-2 p-2">
+      <div className="flex gap-4 p-4">
         <Link to="/" className="[&.active]:font-bold">
           Home
         </Link>

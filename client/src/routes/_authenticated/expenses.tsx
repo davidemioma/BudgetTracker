@@ -14,7 +14,11 @@ import {
 
 export const Route = createFileRoute("/_authenticated/expenses")({
   component: () => {
-    const { data, isLoading, error } = useQuery({
+    const {
+      data: expenses,
+      isLoading,
+      error,
+    } = useQuery({
       queryKey: ["get-expenses"],
       queryFn: async () => {
         const res = await api.expenses.$get();
@@ -64,8 +68,8 @@ export const Route = createFileRoute("/_authenticated/expenses")({
                   </TableRow>
                 ))}
 
-            {data &&
-              data?.expenses.map((expense) => (
+            {expenses &&
+              expenses?.map((expense) => (
                 <TableRow key={expense.id}>
                   <TableCell className="font-medium">{expense.id}</TableCell>
 
