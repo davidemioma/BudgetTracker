@@ -1,7 +1,12 @@
-import { api } from "../../lib/api";
+import { format } from "date-fns";
 import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
 import { createFileRoute } from "@tanstack/react-router";
+import DeleteExpenseBtn from "@/components/DeleteExpenseBtn";
+import {
+  getExpensesQueryOptions,
+  loadingCreateExpenseQueryOptions,
+} from "../../lib/api";
 import {
   Table,
   TableBody,
@@ -14,20 +19,11 @@ import {
 
 export const Route = createFileRoute("/_authenticated/expenses")({
   component: () => {
-    const {
-      data: expenses,
-      isLoading,
-      error,
-    } = useQuery({
-      queryKey: ["get-expenses"],
-      queryFn: async () => {
-        const res = await api.expenses.$get();
+    const { data, isLoading, error } = useQuery(getExpensesQueryOptions);
 
-        const data = await res.json();
-
-        return data;
-      },
-    });
+    const { data: loadingCreateExpense } = useQuery(
+      loadingCreateExpenseQueryOptions,
+    );
 
     if (error) {
       return <span>Could not get total expense! {error.message}</span>;
@@ -45,10 +41,38 @@ export const Route = createFileRoute("/_authenticated/expenses")({
               <TableHead>Title</TableHead>
 
               <TableHead>Amount</TableHead>
+
+              <TableHead>Date</TableHead>
+
+              <TableHead></TableHead>
             </TableRow>
           </TableHeader>
 
           <TableBody>
+            {loadingCreateExpense?.expense && (
+              <TableRow>
+                <TableCell className="font-medium">
+                  <Skeleton className="h-4" />
+                </TableCell>
+
+                <TableCell>
+                  <Skeleton className="h-4" />
+                </TableCell>
+
+                <TableCell>
+                  <Skeleton className="h-4" />
+                </TableCell>
+
+                <TableCell>
+                  <Skeleton className="h-4" />
+                </TableCell>
+
+                <TableCell>
+                  <Skeleton className="h-4" />
+                </TableCell>
+              </TableRow>
+            )}
+
             {isLoading &&
               Array(3)
                 .fill("")
@@ -65,17 +89,31 @@ export const Route = createFileRoute("/_authenticated/expenses")({
                     <TableCell>
                       <Skeleton className="h-4" />
                     </TableCell>
+
+                    <TableCell>
+                      <Skeleton className="h-4" />
+                    </TableCell>
+
+                    <TableCell>
+                      <Skeleton className="h-4" />
+                    </TableCell>
                   </TableRow>
                 ))}
 
-            {expenses &&
-              expenses?.map((expense) => (
+            {data?.expenses &&
+              data.expenses?.map((expense) => (
                 <TableRow key={expense.id}>
                   <TableCell className="font-medium">{expense.id}</TableCell>
 
                   <TableCell>{expense.title}</TableCell>
 
                   <TableCell>${expense.amount}</TableCell>
+
+                  <TableCell>{format(expense.date, "yyyy-MM-dd")}</TableCell>
+
+                  <TableCell>
+                    <DeleteExpenseBtn expenseId={expense.id} />
+                  </TableCell>
                 </TableRow>
               ))}
           </TableBody>

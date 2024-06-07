@@ -1,3 +1,4 @@
+import { Toaster } from "@/components/ui/sonner";
 import { type QueryClient } from "@tanstack/react-query";
 import { TanStackRouterDevtools } from "@tanstack/router-devtools";
 import {
@@ -13,22 +14,24 @@ type MyRouterContext = {
 export const Route = createRootRouteWithContext<MyRouterContext>()({
   component: () => (
     <>
-      <div className="flex gap-4 p-4">
+      <div className="mx-auto flex w-full max-w-2xl items-baseline justify-between p-4">
         <Link to="/" className="[&.active]:font-bold">
-          Home
+          <h1 className="text-2xl font-bold">Expense Tracker</h1>
         </Link>
 
-        <Link to="/profile" className="[&.active]:font-bold">
-          Profile
-        </Link>
+        <div className="flex items-center gap-4">
+          <Link to="/profile" className="[&.active]:font-bold">
+            Profile
+          </Link>
 
-        <Link to="/expenses" className="[&.active]:font-bold">
-          Expenses
-        </Link>
+          <Link to="/expenses" className="[&.active]:font-bold">
+            Expenses
+          </Link>
 
-        <Link to="/create-expense" className="[&.active]:font-bold">
-          Create
-        </Link>
+          <Link to="/create-expense" className="[&.active]:font-bold">
+            Create
+          </Link>
+        </div>
       </div>
 
       <hr />
@@ -36,6 +39,8 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
       <Outlet />
 
       <TanStackRouterDevtools />
+
+      <Toaster />
     </>
   ),
 });

@@ -1,30 +1,64 @@
-import { api } from "../../lib/api";
 import Spinner from "@/components/Spinner";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useForm } from "@tanstack/react-form";
 import { Button } from "@/components/ui/button";
 import PageLoader from "@/components/PageLoader";
+import { Calendar } from "@/components/ui/calendar";
+import { useQueryClient } from "@tanstack/react-query";
+import { CreateExpenseSchema } from "../../../../types";
+import { zodValidator } from "@tanstack/zod-form-adapter";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import {
+  createExpense,
+  getExpensesQueryOptions,
+  loadingCreateExpenseQueryOptions,
+} from "../../lib/api";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/create-expense")({
   loader: () => <PageLoader />,
   component: () => {
     const navigate = useNavigate();
 
+    const queryClient = useQueryClient();
+
     const form = useForm({
+      validatorAdapter: zodValidator,
       defaultValues: {
         title: "",
         amount: "0",
+        date: new Date().toISOString(),
       },
       onSubmit: async ({ value }) => {
-        const res = await api.expenses.$post({ json: value });
-
-        if (!res.ok) {
-          throw new Error("Something went wrong!");
-        }
+        const existingExpenses = await queryClient.ensureQueryData(
+          getExpensesQueryOptions,
+        );
 
         navigate({ to: "/expenses" });
+
+        //Loading
+        queryClient.setQueryData(loadingCreateExpenseQueryOptions.queryKey, {
+          expense: value,
+        });
+
+        try {
+          const newExpense = await createExpense(value);
+
+          queryClient.setQueryData(getExpensesQueryOptions.queryKey, {
+            ...existingExpenses,
+            expenses: [newExpense.expense, ...existingExpenses.expenses],
+          });
+
+          toast.success("Expense created!");
+        } catch (err) {
+          toast.error("Something went wrong! could not create expense.");
+        } finally {
+          queryClient.setQueryData(
+            loadingCreateExpenseQueryOptions.queryKey,
+            {},
+          );
+        }
       },
     });
 
@@ -42,6 +76,9 @@ export const Route = createFileRoute("/_authenticated/create-expense")({
         >
           <form.Field
             name="title"
+            validators={{
+              onChange: CreateExpenseSchema.shape.title,
+            }}
             children={(field) => (
               <div className="w-full space-y-2">
                 <Label htmlFor={field.name}>Title</Label>
@@ -64,6 +101,9 @@ export const Route = createFileRoute("/_authenticated/create-expense")({
 
           <form.Field
             name="amount"
+            validators={{
+              onChange: CreateExpenseSchema.shape.amount,
+            }}
             children={(field) => (
               <div className="w-full space-y-2">
                 <Label htmlFor={field.name}>Amount</Label>
@@ -76,6 +116,29 @@ export const Route = createFileRoute("/_authenticated/create-expense")({
                   value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
+                />
+
+                {field.state.meta.touchedErrors && (
+                  <em>{field.state.meta.touchedErrors}</em>
+                )}
+              </div>
+            )}
+          />
+
+          <form.Field
+            name="date"
+            validators={{
+              onChange: CreateExpenseSchema.shape.date,
+            }}
+            children={(field) => (
+              <div className="flex w-full flex-col items-center gap-2">
+                <Calendar
+                  mode="single"
+                  selected={new Date(field.state.value)}
+                  onSelect={(date) =>
+                    field.handleChange((date || new Date()).toISOString())
+                  }
+                  className="rounded-md border"
                 />
 
                 {field.state.meta.touchedErrors && (
