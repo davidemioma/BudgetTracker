@@ -3,6 +3,7 @@
   "module": "server/index.ts",
   "type": "module",
   "scripts": {
+    "build": "cd client && bun install && bun run build",
     "start": "bun server/index.ts",
     "dev": "bun --watch server/index.ts"
   },
