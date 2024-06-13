@@ -39,7 +39,7 @@ export const Route = createFileRoute("/_authenticated/")({
           </CardHeader>
 
           <CardContent>
-            {isLoading ? <Spinner /> : `$${data?.total}`}
+            {isLoading ? <Spinner /> : `$${data?.total || 0}`}
           </CardContent>
         </Card>
       </div>
