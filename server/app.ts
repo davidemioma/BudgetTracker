@@ -16,7 +16,7 @@ const apiRoutes = app
 // Frontend. it's displays the client code if no API endpoint.
 app.get("*", serveStatic({ root: "./client/dist" }));
 
-app.get("*", serveStatic({ path: "./client/dist/indec.html" }));
+app.get("*", serveStatic({ path: "./client/dist/index.html" }));
 
 export default app;
 
